@@ -17,9 +17,10 @@ namespace GlobalClimateAPI.Controllers
         private readonly IConfiguration _config;
         private readonly IDynamoDbContext _dbContext;
 
-        public AuthController(IDynamoDbContext dbContext)
+        public AuthController(IDynamoDbContext dbContext, IConfiguration config)
         {
             _dbContext = dbContext;
+            _config = config;
         }
 
         [HttpPost]

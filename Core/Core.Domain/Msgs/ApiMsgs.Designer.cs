@@ -77,5 +77,14 @@ namespace Core.Domain.Msgs {
                 return ResourceManager.GetString("EXC002", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a City not found..
+        /// </summary>
+        public static string EXC003 {
+            get {
+                return ResourceManager.GetString("EXC003", resourceCulture);
+            }
+        }
     }
 }
