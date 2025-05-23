@@ -23,7 +23,7 @@ namespace GlobalClimateAPI.Controllers
         public async Task<IActionResult> GetWeather([FromQuery] string city)
         {
             var apiKey = _config["OpenWeather:ApiKey"];
-            var url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric&lang=pt_br";
+            var url = string.Format(_config["Urls:OpenWeatherMap"]!, city, apiKey);
 
             var response = await _httpClient.GetAsync(url);
 

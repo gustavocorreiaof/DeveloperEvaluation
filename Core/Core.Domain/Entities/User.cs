@@ -1,13 +1,11 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using Core.Domain.Entities.Base;
 
 namespace Core.Domain.Entities
 {
     [DynamoDBTable("User")]
-    public class User
+    public class User: BaseEntity
     {
-        [DynamoDBHashKey]
-        public string Id { get; set; }
-
         [DynamoDBProperty]
         public string Name { get; set; }
 

@@ -17,6 +17,27 @@ namespace Core.Infrastructure.Data
             _context = new DynamoDBContext(_dynamoDbClient);
         }
 
+        public async Task DeleteFavoriteCity(FavoriteCity favoriteCity)
+        {
+            await _context.DeleteAsync(favoriteCity);
+        }
+
+        public async Task<List<FavoriteCity>> GetAllFavoriteCityByUserId(string userId)
+        {
+            var conditions = new List<ScanCondition>
+            {
+                new ScanCondition("UserId", ScanOperator.Equal, userId)
+            };
+
+            var result = await _context.ScanAsync<FavoriteCity>(conditions).GetNextSetAsync();
+            return result;
+        }
+
+        public async Task<User> GetUserById(string Id)
+        {
+            return await _context.LoadAsync<User>(Id);
+        }
+
         public async Task<User?> GetUserByNameAsync(string name)
         {
             var conditions = new List<ScanCondition>
@@ -27,6 +48,12 @@ namespace Core.Infrastructure.Data
             var search = _context.ScanAsync<User>(conditions);
             var results = await search.GetNextSetAsync();
             return results.FirstOrDefault();
+        }
+
+        public async Task<FavoriteCity> InsertFavoriteCity(FavoriteCity favoriteCity)
+        {
+            await _context.SaveAsync(favoriteCity);
+            return favoriteCity;
         }
     }
 }

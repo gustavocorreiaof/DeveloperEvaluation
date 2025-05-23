@@ -9,10 +9,12 @@ namespace GlobalClimateAPI.Controllers
     public class CountryController : ControllerBase
     {
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _config;
 
         public CountryController(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
+            _config = config;
         }
 
         [HttpGet]
@@ -21,7 +23,8 @@ namespace GlobalClimateAPI.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest(ApiMsgs.INF003);
 
-            var url = $"https://restcountries.com/v3.1/name/{name}";
+            var baseUrl = _config["Urls:RestCountries"];
+            var url = $"{baseUrl}{name}";
 
             var response = await _httpClient.GetAsync(url);
 

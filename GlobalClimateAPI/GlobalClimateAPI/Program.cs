@@ -1,6 +1,8 @@
 using Amazon.DynamoDBv2;
 using Core.Infrastructure.Data;
 using Core.Infrastructure.Data.Interfaces;
+using Core.Services.BusinessRules;
+using Core.Services.BusinessRules.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -14,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
 builder.Services.AddAWSService<IAmazonDynamoDB>();
 builder.Services.AddSingleton<IDynamoDbContext, DynamoDbContext>(); 
+builder.Services.AddSingleton<IFavoritesBR, FavoritesBR>(); 
 builder.Services.AddHttpClient();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
