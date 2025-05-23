@@ -5,10 +5,12 @@ using Core.Domain.Msgs;
 using Core.Services.BusinessRules.Interfaces;
 using GlobalClimateAPI.Requests;
 using GlobalClimateAPI.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlobalClimateAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class FavoritesController : ControllerBase

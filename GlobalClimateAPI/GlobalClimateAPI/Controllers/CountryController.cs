@@ -1,9 +1,11 @@
 ﻿using Core.Domain.Msgs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace GlobalClimateAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CountryController : ControllerBase
