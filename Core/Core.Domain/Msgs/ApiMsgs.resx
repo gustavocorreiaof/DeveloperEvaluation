@@ -126,6 +126,9 @@
   <data name="EXC003" xml:space="preserve">
     <value>It was not possible to delete this favorite city. This city is not among the user's favorite cities.</value>
   </data>
+  <data name="EXC004" xml:space="preserve">
+    <value>This city is already among the user's favorite cities.</value>
+  </data>
   <data name="INF001" xml:space="preserve">
     <value>City not found.</value>
   </data>

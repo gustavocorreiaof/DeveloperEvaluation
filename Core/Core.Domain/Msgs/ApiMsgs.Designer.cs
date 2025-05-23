@@ -88,6 +88,15 @@ namespace Core.Domain.Msgs {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This city is already among the user&apos;s favorite cities..
+        /// </summary>
+        public static string EXC004 {
+            get {
+                return ResourceManager.GetString("EXC004", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a City not found..
         /// </summary>
         public static string INF001 {

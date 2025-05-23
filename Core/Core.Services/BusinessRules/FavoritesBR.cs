@@ -1,5 +1,6 @@
 ﻿using Core.Domain.DTOs;
 using Core.Domain.Entities;
+using Core.Domain.Enums;
 using Core.Domain.Msgs;
 using Core.Infrastructure.Data.Interfaces;
 using Core.Services.BusinessRules.Interfaces;
@@ -24,7 +25,7 @@ namespace Core.Services.BusinessRules
         {
             try
             {
-                VerifyIfActionIsValid(favoriteDTO.Name, favoriteDTO.UserId);
+                await VerifyIfActionIsValid(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Insert);
 
                 FavoriteCity favoriteCity = new FavoriteCity()
                 {
@@ -48,11 +49,7 @@ namespace Core.Services.BusinessRules
         {
             try
             {
-                VerifyIfActionIsValid(favoriteDTO.Name, favoriteDTO.UserId);
-
-                FavoriteCity favoriteCity = await _dbContext.GetFavoriteCityByCityNameAndUserId(favoriteDTO.Name, 
-                                                                                                favoriteDTO.UserId)
-                                                                                                ?? throw new Exception(ApiMsgs.EXC003);
+                FavoriteCity favoriteCity = await VerifyIfActionIsValid(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Delete);
 
                 _ = _dbContext.DeleteFavoriteCity(favoriteCity.Id);
 
@@ -71,7 +68,7 @@ namespace Core.Services.BusinessRules
             return _dbContext.GetAllFavoriteCityByUserId(userId);
         }
 
-        private async void VerifyIfActionIsValid(string cityName, string userId)
+        private async Task<FavoriteCity> VerifyIfActionIsValid(string cityName, string userId, ActionType actionType)
         {
             var baseUrl = _config["Urls:RestCountries"];
             var url = $"{baseUrl}{cityName}";
@@ -81,7 +78,16 @@ namespace Core.Services.BusinessRules
             if(response.IsSuccessStatusCode)
                 throw new Exception(ApiMsgs.INF001);
 
-            User user = await _dbContext.GetUserById(userId) ?? throw new Exception(ApiMsgs.EXC001);
+            _ = await _dbContext.GetUserById(userId) ?? throw new Exception(ApiMsgs.EXC001);
+
+            FavoriteCity favoriteCity = await _dbContext.GetFavoriteCityByCityNameAndUserId(cityName, userId);
+
+            if (favoriteCity == null && actionType == ActionType.Delete)
+                throw new Exception(ApiMsgs.EXC003);
+            else if(favoriteCity != null && actionType == ActionType.Insert)
+                throw new Exception(ApiMsgs.EXC004);
+
+            return favoriteCity;
         }
     }
 }
