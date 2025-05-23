@@ -24,7 +24,7 @@ namespace Core.Services.BusinessRules
 
         public async Task CreateFavoriteCity(FavoriteDTO favoriteDTO)
         {
-            await VerifyIfActionIsValid(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Insert);
+            await VerifyIfActionIsValidToCities(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Insert);
 
             FavoriteCity favoriteCity = new FavoriteCity()
             {
@@ -35,11 +35,31 @@ namespace Core.Services.BusinessRules
             _ = _dbContext.InsertFavoriteCity(favoriteCity);
         }
 
+        public async Task CreateFavoriteCountry(FavoriteDTO favoriteDTO)
+        {
+            await VerifyIfActionIsValidToCountry(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Insert);
+
+            FavoriteCountry favoriteCountry = new FavoriteCountry()
+            {
+                UserId = favoriteDTO.UserId,
+                CountryName = favoriteDTO.Name
+            };
+
+            _ = _dbContext.InsertFavoriteCountry(favoriteCountry);
+        }
+
         public async Task DeleteFavoriteCity(FavoriteDTO favoriteDTO)
         {
-            FavoriteCity favoriteCity = await VerifyIfActionIsValid(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Delete);
+            FavoriteCity favoriteCity = await VerifyIfActionIsValidToCities(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Delete);
 
             _ = _dbContext.DeleteFavoriteCity(favoriteCity.Id);
+        }
+
+        public async Task DeleteFavoriteCountry(FavoriteDTO favoriteDTO)
+        {
+            FavoriteCountry favoriteCountry = await VerifyIfActionIsValidToCountry(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Delete);
+
+            _ = _dbContext.DeleteFavoriteCity(favoriteCountry.Id);
         }
 
         public Task<List<FavoriteCity>> GetAllFavoriteCityByUserId(string userId)
@@ -47,7 +67,12 @@ namespace Core.Services.BusinessRules
             return _dbContext.GetAllFavoriteCityByUserId(userId);
         }
 
-        private async Task<FavoriteCity> VerifyIfActionIsValid(string cityName, string userId, ActionType actionType)
+        public Task<List<FavoriteCountry>> GetAllFavoriteCountryByUserId(string userId)
+        {
+            return _dbContext.GetAllFavoriteCountryByUserId(userId);
+        }
+
+        private async Task<FavoriteCity> VerifyIfActionIsValidToCities(string cityName, string userId, ActionType actionType)
         {
             var baseUrl = _config["Urls:RestCountries"];
             var url = $"{baseUrl}{cityName}";
@@ -67,6 +92,28 @@ namespace Core.Services.BusinessRules
                 throw new ApiException(ApiMsgs.EXC004);
 
             return favoriteCity;
+        }
+
+        private async Task<FavoriteCountry> VerifyIfActionIsValidToCountry(string countryName, string userId, ActionType actionType)
+        {
+            var baseUrl = _config["Urls:RestCountries"];
+            var url = $"{baseUrl}{countryName}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+                throw new ApiException(string.Format(ApiMsgs.INF002, countryName));
+
+            _ = await _dbContext.GetUserById(userId) ?? throw new ApiException(ApiMsgs.EXC001);
+
+            FavoriteCountry favoriteCountry = await _dbContext.GetFavoriteCountryByCityNameAndUserId(countryName, userId);
+
+            if (favoriteCountry == null && actionType == ActionType.Delete)
+                throw new ApiException(ApiMsgs.EXC003);
+            else if (favoriteCountry != null && actionType == ActionType.Insert)
+                throw new ApiException(ApiMsgs.EXC004);
+
+            return favoriteCountry;
         }
     }
 }

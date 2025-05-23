@@ -38,7 +38,7 @@ namespace GlobalClimateAPI.Controllers
         }
 
         [HttpPost("AddFavoriteCityByUserId")]
-        public async Task<IActionResult> AddFavoriteCityByUserId([FromBody] FavoriteRequest request)
+        public async Task<IActionResult> AddFavoriteCityByUserId([FromBody] CityFavoriteRequest request)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace GlobalClimateAPI.Controllers
         }
 
         [HttpDelete("DeleteFavoriteCityByUserId")]
-        public async Task<IActionResult> DeleteFavoriteCityByUserId([FromBody] FavoriteRequest request)
+        public async Task<IActionResult> DeleteFavoriteCityByUserId([FromBody] CityFavoriteRequest request)
         {
             try
             {
@@ -81,26 +81,64 @@ namespace GlobalClimateAPI.Controllers
 
         #endregion
 
+        #region Countries CONTEXT
 
-        #region COUNTRIES CONTEXT
-
-        /*[HttpGet]
-        public IActionResult GetFavoriteCountriesByUserId()
+        [HttpGet("GetFavoriteCountriesByUserId")]
+        public async Task<IActionResult> GetFavoriteCountriesByUserId([FromQuery] string userId)
         {
+            try
+            {
+                List<FavoriteCountry> favoriteCountries = await _IFavoritesBR.GetAllFavoriteCountryByUserId(userId);
 
+                return Ok(new ApiResponse<List<FavoriteCountry>>() { Success = true, Data = favoriteCountries });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+            }
         }
 
-        [HttpPost]
-        public IActionResult AddFavoriteCountryByUserId()
+        [HttpPost("AddFavoriteCountryByUserId")]
+        public async Task<IActionResult> AddFavoriteCountryByUserId([FromBody] CountryFavoriteRequest request)
         {
+            try
+            {
+                FavoriteDTO favoriteDTO = new FavoriteDTO(request.UserId, request.CountryName);
 
+                await _IFavoritesBR.CreateFavoriteCountry(favoriteDTO);
+
+                return Ok(new ApiResponse<string>() { Success = true, Message = ApiMsgs.INF005 });
+            }
+            catch (ApiException ex)
+            {
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+            }
         }
 
-        [HttpDelete]
-        public IActionResult DeleteFavoriteCountryByUserId()
+        [HttpDelete("DeleteFavoriteCountryByUserId")]
+        public async Task<IActionResult> DeleteFavoriteCountryByUserId([FromBody] CountryFavoriteRequest request)
         {
+            try
+            {
+                FavoriteDTO favoriteDTO = new FavoriteDTO(request.UserId, request.CountryName);
 
-        }*/
+                await _IFavoritesBR.DeleteFavoriteCountry(favoriteDTO);
+
+                return Ok(new ApiResponse<string>() { Success = true, Message = ApiMsgs.INF006 });
+            }
+            catch (ApiException ex)
+            {
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+            }
+        }
 
         #endregion
     }
