@@ -1,7 +1,10 @@
 ﻿using Core.Domain.DTOs;
 using Core.Domain.Entities;
+using Core.Domain.Exceptions;
+using Core.Domain.Msgs;
 using Core.Services.BusinessRules.Interfaces;
 using GlobalClimateAPI.Requests;
+using GlobalClimateAPI.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlobalClimateAPI.Controllers
@@ -22,42 +25,57 @@ namespace GlobalClimateAPI.Controllers
         [HttpGet("GetFavoriteCitiesByUserId")]
         public async Task<IActionResult> GetFavoriteCitiesByUserId([FromQuery] string userId)
         {
-            List<FavoriteCity> favoriteCities = await _IFavoritesBR.GetAllFavoriteCityByUserId(userId);
+            try
+            {
+                List<FavoriteCity> favoriteCities = await _IFavoritesBR.GetAllFavoriteCityByUserId(userId);
 
-            return Ok(favoriteCities);
+                return Ok(new ApiResponse<List<FavoriteCity>>() { Success = true, Data = favoriteCities });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+            }
         }
 
         [HttpPost("AddFavoriteCityByUserId")]
         public async Task<IActionResult> AddFavoriteCityByUserId([FromBody] FavoriteRequest request)
         {
-            FavoriteDTO favoriteDTO = new FavoriteDTO(request.UserId, request.CityName);
-
-            bool favoriteCityHasCreated = await _IFavoritesBR.CreateFavoriteCity(favoriteDTO);
-
-            if (favoriteCityHasCreated)
+            try
             {
-                return Ok();
+                FavoriteDTO favoriteDTO = new FavoriteDTO(request.UserId, request.CityName);
+
+                await _IFavoritesBR.CreateFavoriteCity(favoriteDTO);
+
+                return Ok(new ApiResponse<string>() { Success = true, Message = ApiMsgs.INF005 });
             }
-            else
+            catch (ApiException ex)
             {
-                return BadRequest();
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
             }
         }
 
         [HttpDelete("DeleteFavoriteCityByUserId")]
         public async Task<IActionResult> DeleteFavoriteCityByUserId([FromBody] FavoriteRequest request)
         {
-            FavoriteDTO favoriteDTO = new FavoriteDTO(request.UserId, request.CityName);
-
-            bool favoriteCityHasCreated = await _IFavoritesBR.DeleteFavoriteCity(favoriteDTO);
-
-            if (favoriteCityHasCreated)
+            try
             {
-                return Ok();
+                FavoriteDTO favoriteDTO = new FavoriteDTO(request.UserId, request.CityName);
+
+                await _IFavoritesBR.DeleteFavoriteCity(favoriteDTO);
+
+                return Ok(new ApiResponse<string>() { Success = true, Message = ApiMsgs.INF006 });
             }
-            else
+            catch (ApiException ex)
             {
-                return BadRequest();
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
             }
         }
 
