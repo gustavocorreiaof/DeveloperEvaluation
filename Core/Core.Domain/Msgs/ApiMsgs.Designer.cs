@@ -81,9 +81,27 @@ namespace Core.Domain.Msgs {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a City not found..
         /// </summary>
-        public static string EXC003 {
+        public static string INF001 {
             get {
-                return ResourceManager.GetString("EXC003", resourceCulture);
+                return ResourceManager.GetString("INF001", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Country &apos;{0}&apos; not found..
+        /// </summary>
+        public static string INF002 {
+            get {
+                return ResourceManager.GetString("INF002", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Country name is required..
+        /// </summary>
+        public static string INF003 {
+            get {
+                return ResourceManager.GetString("INF003", resourceCulture);
             }
         }
     }

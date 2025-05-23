@@ -28,7 +28,7 @@ namespace GlobalClimateAPI.Controllers
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return NotFound(ApiMsgs.EXC003);
+                return NotFound(ApiMsgs.INF001);
 
             var json = await response.Content.ReadAsStringAsync();
 

@@ -123,7 +123,13 @@
   <data name="EXC002" xml:space="preserve">
     <value>Login Faild.</value>
   </data>
-  <data name="EXC003" xml:space="preserve">
+  <data name="INF001" xml:space="preserve">
     <value>City not found.</value>
+  </data>
+  <data name="INF002" xml:space="preserve">
+    <value>Country '{0}' not found.</value>
+  </data>
+  <data name="INF003" xml:space="preserve">
+    <value>Country name is required.</value>
   </data>
 </root>
