@@ -122,5 +122,32 @@ namespace Core.Domain.Msgs {
                 return ResourceManager.GetString("INF003", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a An error occurred in the system. Please try again later..
+        /// </summary>
+        public static string INF004 {
+            get {
+                return ResourceManager.GetString("INF004", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a City added to favorites..
+        /// </summary>
+        public static string INF005 {
+            get {
+                return ResourceManager.GetString("INF005", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a City deleted successfully..
+        /// </summary>
+        public static string INF006 {
+            get {
+                return ResourceManager.GetString("INF006", resourceCulture);
+            }
+        }
     }
 }

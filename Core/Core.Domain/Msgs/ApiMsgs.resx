@@ -138,4 +138,13 @@
   <data name="INF003" xml:space="preserve">
     <value>Country name is required.</value>
   </data>
+  <data name="INF004" xml:space="preserve">
+    <value>An error occurred in the system. Please try again later.</value>
+  </data>
+  <data name="INF005" xml:space="preserve">
+    <value>City added to favorites.</value>
+  </data>
+  <data name="INF006" xml:space="preserve">
+    <value>City deleted successfully.</value>
+  </data>
 </root>

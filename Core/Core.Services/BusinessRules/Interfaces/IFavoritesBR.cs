@@ -5,8 +5,8 @@ namespace Core.Services.BusinessRules.Interfaces
 {
     public interface IFavoritesBR
     {
-        Task<bool> CreateFavoriteCity(FavoriteDTO favoriteDTO);
-        Task<bool> DeleteFavoriteCity(FavoriteDTO favoriteDTO);
+        Task CreateFavoriteCity(FavoriteDTO favoriteDTO);
+        Task DeleteFavoriteCity(FavoriteDTO favoriteDTO);
         Task<List<FavoriteCity>> GetAllFavoriteCityByUserId(string userId);
     }
 }
