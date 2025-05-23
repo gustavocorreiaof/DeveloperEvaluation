@@ -1,6 +1,7 @@
 ﻿using Core.Domain.DTOs;
 using Core.Domain.Entities;
 using Core.Services.BusinessRules.Interfaces;
+using GlobalClimateAPI.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlobalClimateAPI.Controllers
@@ -18,7 +19,7 @@ namespace GlobalClimateAPI.Controllers
 
         #region CITIES CONTEXT
 
-        [HttpGet]
+        [HttpGet("GetFavoriteCitiesByUserId")]
         public async Task<IActionResult> GetFavoriteCitiesByUserId([FromQuery] string userId)
         {
             List<FavoriteCity> favoriteCities = await _IFavoritesBR.GetAllFavoriteCityByUserId(userId);
@@ -26,10 +27,10 @@ namespace GlobalClimateAPI.Controllers
             return Ok(favoriteCities);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddFavoriteCityByUserId([FromQuery] string userId, string cityName)
+        [HttpPost("AddFavoriteCityByUserId")]
+        public async Task<IActionResult> AddFavoriteCityByUserId([FromBody] FavoriteRequest request)
         {
-            FavoriteDTO favoriteDTO = new FavoriteDTO(userId, cityName);
+            FavoriteDTO favoriteDTO = new FavoriteDTO(request.UserId, request.CityName);
 
             bool favoriteCityHasCreated = await _IFavoritesBR.CreateFavoriteCity(favoriteDTO);
 
@@ -43,10 +44,10 @@ namespace GlobalClimateAPI.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteFavoriteCityByUserId([FromQuery] string userId, string cityName)
+        [HttpDelete("DeleteFavoriteCityByUserId")]
+        public async Task<IActionResult> DeleteFavoriteCityByUserId([FromBody] FavoriteRequest request)
         {
-            FavoriteDTO favoriteDTO = new FavoriteDTO(userId, cityName);
+            FavoriteDTO favoriteDTO = new FavoriteDTO(request.UserId, request.CityName);
 
             bool favoriteCityHasCreated = await _IFavoritesBR.DeleteFavoriteCity(favoriteDTO);
 

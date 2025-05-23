@@ -8,6 +8,7 @@ namespace Core.Infrastructure.Data.Interfaces
         Task<User> GetUserById(string Id);
         Task<FavoriteCity> InsertFavoriteCity(FavoriteCity favoriteCity);
         Task<List<FavoriteCity>> GetAllFavoriteCityByUserId(string userId);
-        Task DeleteFavoriteCity(FavoriteCity favoriteCity);
+        Task DeleteFavoriteCity(string id);
+        Task<FavoriteCity> GetFavoriteCityByCityNameAndUserId(string cityName, string userId);        
     }
 }

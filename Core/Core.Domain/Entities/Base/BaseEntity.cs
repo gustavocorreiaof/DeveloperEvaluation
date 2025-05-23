@@ -5,6 +5,6 @@ namespace Core.Domain.Entities.Base
     public class BaseEntity
     {
         [DynamoDBHashKey]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
     }
 }

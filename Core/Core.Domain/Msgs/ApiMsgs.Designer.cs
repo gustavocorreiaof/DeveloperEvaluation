@@ -79,6 +79,15 @@ namespace Core.Domain.Msgs {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a It was not possible to delete this favorite city. This city is not among the user&apos;s favorite cities..
+        /// </summary>
+        public static string EXC003 {
+            get {
+                return ResourceManager.GetString("EXC003", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a City not found..
         /// </summary>
         public static string INF001 {

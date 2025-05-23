@@ -13,10 +13,11 @@ namespace Core.Services.BusinessRules
         private readonly IConfiguration _config;
         private readonly IDynamoDbContext _dbContext;
         
-        public FavoritesBR(IConfiguration config, IDynamoDbContext dbContext)
+        public FavoritesBR(IConfiguration config, IDynamoDbContext dbContext, HttpClient httpClient)
         {
             _config = config;
             _dbContext = dbContext;
+            _httpClient = httpClient;
         }
 
         public async Task<bool> CreateFavoriteCity(FavoriteDTO favoriteDTO)
@@ -31,7 +32,7 @@ namespace Core.Services.BusinessRules
                     CityName = favoriteDTO.Name
                 };
 
-                _dbContext.InsertFavoriteCity(favoriteCity);
+                _ = _dbContext.InsertFavoriteCity(favoriteCity);
 
                 return true;
             }
@@ -49,13 +50,11 @@ namespace Core.Services.BusinessRules
             {
                 VerifyIfActionIsValid(favoriteDTO.Name, favoriteDTO.UserId);
 
-                FavoriteCity favoriteCity = new FavoriteCity()
-                {
-                    UserId = favoriteDTO.UserId,
-                    CityName = favoriteDTO.Name
-                };
+                FavoriteCity favoriteCity = await _dbContext.GetFavoriteCityByCityNameAndUserId(favoriteDTO.Name, 
+                                                                                                favoriteDTO.UserId)
+                                                                                                ?? throw new Exception(ApiMsgs.EXC003);
 
-                _dbContext.DeleteFavoriteCity(favoriteCity);
+                _ = _dbContext.DeleteFavoriteCity(favoriteCity.Id);
 
                 return true;
             }

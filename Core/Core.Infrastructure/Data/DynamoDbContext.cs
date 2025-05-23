@@ -17,9 +17,9 @@ namespace Core.Infrastructure.Data
             _context = new DynamoDBContext(_dynamoDbClient);
         }
 
-        public async Task DeleteFavoriteCity(FavoriteCity favoriteCity)
+        public async Task DeleteFavoriteCity(string id)
         {
-            await _context.DeleteAsync(favoriteCity);
+            await _context.DeleteAsync<FavoriteCity>(id);
         }
 
         public async Task<List<FavoriteCity>> GetAllFavoriteCityByUserId(string userId)
@@ -31,6 +31,18 @@ namespace Core.Infrastructure.Data
 
             var result = await _context.ScanAsync<FavoriteCity>(conditions).GetNextSetAsync();
             return result;
+        }
+
+        public async Task<FavoriteCity> GetFavoriteCityByCityNameAndUserId(string cityName, string userId)
+        {
+            var conditions = new List<ScanCondition>
+            {
+                new ScanCondition("CityName", ScanOperator.Equal, cityName),
+                new ScanCondition("UserId", ScanOperator.Equal, userId)
+            };
+
+            var results = await _context.ScanAsync<FavoriteCity>(conditions).GetNextSetAsync();
+            return results.FirstOrDefault()!;
         }
 
         public async Task<User> GetUserById(string Id)
