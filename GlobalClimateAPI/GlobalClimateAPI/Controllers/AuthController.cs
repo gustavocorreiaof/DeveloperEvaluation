@@ -1,9 +1,13 @@
 ﻿using Core.Domain.Entities;
+using Core.Domain.Exceptions;
 using Core.Domain.Msgs;
 using Core.Infrastructure.Data.Interfaces;
 using GlobalClimateAPI.Requests;
+using GlobalClimateAPI.Responses;
+using GlobalClimateAPI.Responses.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Annotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -24,16 +28,32 @@ namespace GlobalClimateAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponse))]
+        [SwaggerOperation(Summary = "Verify if a user exists in Dynamo and generate a JWT token based on their credentials.", Description = "Returns a JWT for that user."        )]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            User user = await _dbContext.GetUserByNameAsync(request.UserName) ?? throw new Exception(ApiMsgs.EXC001);
+            try
+            {
+                User user = await _dbContext.GetUserByNameAsync(request.UserName) ?? throw new ApiException(ApiMsgs.EXC001);
 
-            if (user.Password != request.Password)
-                return Unauthorized(ApiMsgs.EXC002);
-                
-            var token = GenerateJwtToken(user.Name, user.Email);
-            
-            return Ok(new { token });
+                if (user.Password != request.Password)
+                    return Unauthorized(new BaseResponse { Success = true, Message = ApiMsgs.EXC002 });
+
+                var token = GenerateJwtToken(user.Name, user.Email);
+
+                return Ok(new LoginResponse { Success = true, Token = token });
+            }
+            catch (ApiException ex)
+            {
+                return BadRequest(new BaseResponse() { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+            }
         }
 
         private string GenerateJwtToken(string username, string email)
