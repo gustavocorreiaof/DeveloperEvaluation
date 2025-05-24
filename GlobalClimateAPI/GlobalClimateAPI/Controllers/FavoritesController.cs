@@ -5,6 +5,7 @@ using Core.Domain.Msgs;
 using Core.Services.BusinessRules.Interfaces;
 using GlobalClimateAPI.Requests;
 using GlobalClimateAPI.Responses;
+using GlobalClimateAPI.Responses.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,11 +32,11 @@ namespace GlobalClimateAPI.Controllers
             {
                 List<FavoriteCity> favoriteCities = await _IFavoritesBR.GetAllFavoriteCityByUserId(userId);
 
-                return Ok(new ApiResponse<List<FavoriteCity>>() { Success = true, Data = favoriteCities });
+                return Ok(new GetFavoriteCitiesResponse() { Success = true, Cities = favoriteCities });
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
             }
         }
 
@@ -48,15 +49,15 @@ namespace GlobalClimateAPI.Controllers
 
                 await _IFavoritesBR.CreateFavoriteCity(favoriteDTO);
 
-                return Ok(new ApiResponse<string>() { Success = true, Message = ApiMsgs.INF005 });
+                return Ok(new BaseResponse() { Success = true, Message = ApiMsgs.INF005 });
             }
             catch (ApiException ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ex.Message });
+                return BadRequest(new BaseResponse() { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
             }
         }
 
@@ -69,15 +70,15 @@ namespace GlobalClimateAPI.Controllers
 
                 await _IFavoritesBR.DeleteFavoriteCity(favoriteDTO);
 
-                return Ok(new ApiResponse<string>() { Success = true, Message = ApiMsgs.INF006 });
+                return Ok(new BaseResponse() { Success = true, Message = ApiMsgs.INF006 });
             }
             catch (ApiException ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ex.Message });
+                return BadRequest(new BaseResponse() { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
             }
         }
 
@@ -92,11 +93,11 @@ namespace GlobalClimateAPI.Controllers
             {
                 List<FavoriteCountry> favoriteCountries = await _IFavoritesBR.GetAllFavoriteCountryByUserId(userId);
 
-                return Ok(new ApiResponse<List<FavoriteCountry>>() { Success = true, Data = favoriteCountries });
+                return Ok(new GetFavoriteCountriesResponse() { Success = true, Countries = favoriteCountries });
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
             }
         }
 
@@ -109,15 +110,15 @@ namespace GlobalClimateAPI.Controllers
 
                 await _IFavoritesBR.CreateFavoriteCountry(favoriteDTO);
 
-                return Ok(new ApiResponse<string>() { Success = true, Message = ApiMsgs.INF005 });
+                return Ok(new BaseResponse() { Success = true, Message = ApiMsgs.INF005 });
             }
             catch (ApiException ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ex.Message });
+                return BadRequest(new BaseResponse() { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
             }
         }
 
@@ -130,15 +131,15 @@ namespace GlobalClimateAPI.Controllers
 
                 await _IFavoritesBR.DeleteFavoriteCountry(favoriteDTO);
 
-                return Ok(new ApiResponse<string>() { Success = true, Message = ApiMsgs.INF006 });
+                return Ok(new BaseResponse() { Success = true, Message = ApiMsgs.INF006 });
             }
             catch (ApiException ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ex.Message });
+                return BadRequest(new BaseResponse() { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiResponse<string>() { Success = false, Message = ApiMsgs.INF004 });
+                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
             }
         }
 
