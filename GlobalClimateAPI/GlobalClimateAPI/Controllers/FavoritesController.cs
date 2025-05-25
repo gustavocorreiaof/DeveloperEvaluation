@@ -31,7 +31,7 @@ namespace GlobalClimateAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetFavoriteCitiesResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [SwaggerOperation(Summary = "Returns the user's favorite cities.", Description = "Recive Id's User to search his favorite cities.")]
         public async Task<IActionResult> GetFavoriteCitiesByUserId([FromQuery, SwaggerParameter("The userId to search his favorite cities.")] string userId)
         {
@@ -47,7 +47,10 @@ namespace GlobalClimateAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
 
@@ -68,7 +71,10 @@ namespace GlobalClimateAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
 
@@ -89,7 +95,10 @@ namespace GlobalClimateAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
 
@@ -106,9 +115,16 @@ namespace GlobalClimateAPI.Controllers
 
                 return Ok(new GetFavoriteCountriesResponse() { Success = true, Countries = favoriteCountries });
             }
+            catch (ApiException ex)
+            {
+                return BadRequest(new BaseResponse() { Success = false, Message = ex.Message });
+            }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
 
@@ -129,7 +145,10 @@ namespace GlobalClimateAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
 
@@ -150,7 +169,10 @@ namespace GlobalClimateAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
 

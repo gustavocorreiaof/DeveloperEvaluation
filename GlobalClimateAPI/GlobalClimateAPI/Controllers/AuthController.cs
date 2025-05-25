@@ -31,7 +31,7 @@ namespace GlobalClimateAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [SwaggerOperation(Summary = "Verify if a user exists in Dynamo and generate a JWT token based on their credentials.", Description = "Returns a JWT for that user.")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
@@ -52,7 +52,10 @@ namespace GlobalClimateAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
 

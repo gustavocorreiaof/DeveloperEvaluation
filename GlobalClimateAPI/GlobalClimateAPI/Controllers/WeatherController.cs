@@ -29,7 +29,7 @@ namespace GlobalClimateAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetWeatherResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponse))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [SwaggerOperation(Summary = "Returns information about a weather in a city.", Description = "Searches for information in the OpenWeather API based on the city's name provided by the user.")]
         public async Task<IActionResult> GetWeather([FromQuery, SwaggerParameter("The name of city to search and know his weather infos", Required = true)] string city)
         {
@@ -53,7 +53,10 @@ namespace GlobalClimateAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
     }

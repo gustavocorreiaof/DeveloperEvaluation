@@ -29,7 +29,7 @@ namespace GlobalClimateAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCountryResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponse))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [SwaggerOperation(Summary = "Returns information about a country.", Description = "Searches for information in the RestCountries API based on the name provided by the user.")]
         public async Task<IActionResult> GetCountry([FromQuery, SwaggerParameter("The name of the country to retrieve.", Required = true)] string name)
         {
@@ -55,7 +55,10 @@ namespace GlobalClimateAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse() { Success = false, Message = ApiMsgs.INF004 });
+                return Problem(
+                    detail: ApiMsgs.INF004,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
             }
         }
     }
