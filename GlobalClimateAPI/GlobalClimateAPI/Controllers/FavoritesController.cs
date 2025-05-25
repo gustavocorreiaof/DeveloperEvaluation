@@ -33,7 +33,7 @@ namespace GlobalClimateAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         [SwaggerOperation(Summary = "Returns the user's favorite cities.", Description = "Recive Id's User to search his favorite cities.")]
-        public async Task<IActionResult> GetFavoriteCitiesByUserId([FromQuery, SwaggerParameter("The userId to search his favorite cities.")] string userId)
+        public async Task<IActionResult> GetFavoriteCitiesByUserId([FromQuery, SwaggerParameter("The userId to search his favorite cities.", Required = true)] string userId)
         {
             try
             {
@@ -119,7 +119,13 @@ namespace GlobalClimateAPI.Controllers
         #region Countries CONTEXT
 
         [HttpGet("GetFavoriteCountriesByUserId")]
-        public async Task<IActionResult> GetFavoriteCountriesByUserId([FromQuery] string userId)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetFavoriteCountriesResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        [SwaggerOperation(Summary = "Returns the user's favorite countries.", Description = "Recive Id's User to search his favorite countries.")]
+        public async Task<IActionResult> GetFavoriteCountriesByUserId([FromQuery, SwaggerParameter("The userId to search his favorite countries.", Required = true)] string userId)
         {
             try
             {
@@ -141,6 +147,12 @@ namespace GlobalClimateAPI.Controllers
         }
 
         [HttpPost("AddFavoriteCountryByUserId")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        [SwaggerOperation(Summary = "Create new FavoriteCountry to User.", Description = "Recive UserId and CountryName to add the Country in user's favorite countries.")]
         public async Task<IActionResult> AddFavoriteCountryByUserId([FromBody] CountryFavoriteRequest request)
         {
             try
@@ -165,6 +177,12 @@ namespace GlobalClimateAPI.Controllers
         }
 
         [HttpDelete("DeleteFavoriteCountryByUserId")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        [SwaggerOperation(Summary = "Delete Country from user's favorite countries.", Description = "Recive UserId and CountryName to remove Country from user's favorite countries.")]
         public async Task<IActionResult> DeleteFavoriteCountryByUserId([FromBody] CountryFavoriteRequest request)
         {
             try
