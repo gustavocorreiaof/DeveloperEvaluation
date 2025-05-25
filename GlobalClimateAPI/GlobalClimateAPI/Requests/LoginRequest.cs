@@ -1,5 +1,4 @@
 ﻿using Core.Domain.Msgs;
-using GlobalClimateAPI.Requests.ValidationAttributes;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,7 +11,7 @@ namespace GlobalClimateAPI.Requests
         public required string UserName { get; set; }
 
         [SwaggerSchema("User's DynamoDB password.", Nullable = false)]
-        [PasswordValidation]
+        [Required]
         public required string Password { get; set; }
     }
 }
