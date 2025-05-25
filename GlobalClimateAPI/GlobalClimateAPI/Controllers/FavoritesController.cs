@@ -8,6 +8,7 @@ using GlobalClimateAPI.Responses;
 using GlobalClimateAPI.Responses.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace GlobalClimateAPI.Controllers
 {
@@ -26,13 +27,23 @@ namespace GlobalClimateAPI.Controllers
         #region CITIES CONTEXT
 
         [HttpGet("GetFavoriteCitiesByUserId")]
-        public async Task<IActionResult> GetFavoriteCitiesByUserId([FromQuery] string userId)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetFavoriteCitiesResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponse))]
+        [SwaggerOperation(Summary = "Returns the user's favorite cities.", Description = "Recive Id's User to search his favorite cities.")]
+        public async Task<IActionResult> GetFavoriteCitiesByUserId([FromQuery, SwaggerParameter("The userId to search his favorite cities.")] string userId)
         {
             try
             {
                 List<FavoriteCity> favoriteCities = await _IFavoritesBR.GetAllFavoriteCityByUserId(userId);
 
                 return Ok(new GetFavoriteCitiesResponse() { Success = true, Cities = favoriteCities });
+            }
+            catch (ApiException ex)
+            {
+                return BadRequest(new BaseResponse() { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
