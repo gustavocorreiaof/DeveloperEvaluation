@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Requests\ValidationAttributes\**" />
+    <Content Remove="Requests\ValidationAttributes\**" />
+    <EmbeddedResource Remove="Requests\ValidationAttributes\**" />
+    <None Remove="Requests\ValidationAttributes\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="4.0.1" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
@@ -20,10 +27,6 @@
     <ProjectReference Include="..\..\Core\Core.Domain\Core.Domain.csproj" />
     <ProjectReference Include="..\..\Core\Core.Infrastructure\Core.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Core\Core.Services\Core.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Requests\ValidationAttributes\" />
   </ItemGroup>
 
 	<PropertyGroup>
