@@ -24,6 +24,8 @@ namespace GlobalClimateAPI.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCountryResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(BaseResponse))]
@@ -45,7 +47,7 @@ namespace GlobalClimateAPI.Controllers
                     return NotFound(new BaseResponse() { Success = false, Message = string.Format(ApiMsgs.INF002, name) });
 
                 var json = await response.Content.ReadAsStringAsync();
-                return Ok(new GetCountryResponse() { Success = true, CountryInfo = JsonDocument.Parse(json).ToString() });
+                return Ok(new GetCountryResponse() { Success = true, CountryInfos = JsonDocument.Parse(json).ToString() });
             }
             catch (ApiException ex)
             {
