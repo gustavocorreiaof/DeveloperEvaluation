@@ -55,6 +55,12 @@ namespace GlobalClimateAPI.Controllers
         }
 
         [HttpPost("AddFavoriteCityByUserId")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        [SwaggerOperation(Summary = "Create new FavoriteCity to User.", Description = "Recive UserId and CityName to add the city in user's favorite cities.")]
         public async Task<IActionResult> AddFavoriteCityByUserId([FromBody] CityFavoriteRequest request)
         {
             try
@@ -79,6 +85,12 @@ namespace GlobalClimateAPI.Controllers
         }
 
         [HttpDelete("DeleteFavoriteCityByUserId")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        [SwaggerOperation(Summary = "Delete city from user's favorite cities.", Description = "Recive UserId and CityName to remove city from user's favorite cities.")]
         public async Task<IActionResult> DeleteFavoriteCityByUserId([FromBody] CityFavoriteRequest request)
         {
             try
