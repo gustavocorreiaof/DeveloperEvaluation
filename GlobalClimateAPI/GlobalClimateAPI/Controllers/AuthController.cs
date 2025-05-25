@@ -32,7 +32,7 @@ namespace GlobalClimateAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(BaseResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(BaseResponse))]
-        [SwaggerOperation(Summary = "Verify if a user exists in Dynamo and generate a JWT token based on their credentials.", Description = "Returns a JWT for that user."        )]
+        [SwaggerOperation(Summary = "Verify if a user exists in Dynamo and generate a JWT token based on their credentials.", Description = "Returns a JWT for that user.")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             try
