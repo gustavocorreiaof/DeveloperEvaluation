@@ -1,0 +1,54 @@
+﻿@page "/deletePage"
+@using Core.Domain.Enums
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="login-container">
+    <div class="login-box">
+        <div class="icon-circle">
+            <i class="oi oi-person"></i>
+        </div>
+        <h2>Informe seu User ID</h2>
+
+        <div class="input-group">
+            <span class="icon oi oi-key"></span>
+            <input @bind="UserId" class="input-field" placeholder="User ID" />
+        </div>
+
+        <div class="input-group">
+            <span class="icon oi oi-key"></span>
+            <input @bind="EntityId" class="input-field" placeholder="ID do país/cidade" />
+        </div>
+
+        <button class="login-button" @onclick="GoToListPage">Listar</button>
+    </div>
+</div>
+
+@code {
+    private string UserId { get; set; } = string.Empty;
+    private string EntityId { get; set; } = string.Empty;
+
+    private async Task GoToListPage()
+    {
+        await JS.InvokeVoidAsync("localStorage.setItem", "userId", UserId);
+        Navigation.NavigateTo("/favorites/List");
+    }
+}
+
+<style>
+    .card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #f0f4f8;
+    }
+
+    .user-card {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 20px;
+        border: none;
+        background-color: #ffffff;
+    }
+</style>

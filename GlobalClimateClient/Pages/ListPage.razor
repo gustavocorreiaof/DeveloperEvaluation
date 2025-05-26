@@ -1,0 +1,220 @@
+﻿@page "/favorites/List"
+@using Core.Domain.Entities
+@using Core.Domain.Enums
+@using GlobalClimateAPI.Responses
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="title-container">
+    <h3 class="text-white">Cidades Favoritas</h3>
+</div>
+
+
+<div class="table-responsive favorite-table-container">
+    
+    @if (IsLoading)
+    {
+        <h3 class="text-white">Carregando...</h3>
+    }
+    else if (HasError)
+    {
+        <h3 class="text-white">Erro ao carregar as cidades favoritas.</h3>
+    }
+    else if ((FavoriteCities == null || FavoriteCities.Count == 0) && (FavoriteCountries == null || FavoriteCountries.Count == 0))
+    {
+        if (btnActionTypeContext == BtnActionTypeContext.City)
+        {
+            <h3 class="text-white">Nenhuma cidade favorita encontrada.</h3>
+        }
+        else
+        {
+            <h3 class="text-white">Nenhum país favorito encontrado.</h3>            
+        }
+    }
+    else
+    {
+        <table class="table table-hover table-dark table-bordered text-white">
+            <thead>
+                <tr>
+                    <th>Nome da Cidade</th>
+                    <th>Data Favoritada</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (btnActionTypeContext == BtnActionTypeContext.City)
+                {
+                    foreach (var city in FavoriteCities)
+                    {
+                        <tr>
+                            <td>@city.CityName</td>
+                            <td>@city.FavoritedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <button class="btn btn-delete" @onclick="() => DeleteCity(city.Id)">
+                                    delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    foreach (var country in FavoriteCountries)
+                    {
+                        <tr>
+                            <td>@country.CountryName</td>
+                            <td>@country.FavoritedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+
+                            <td>
+                                <button class="btn btn-delete" @onclick="() => DeleteCountry(country.Id)">
+                                    delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+@code {
+
+    private string? btnActionType;
+    private string? userId;
+    private List<FavoriteCity> FavoriteCities;
+    private List<FavoriteCountry> FavoriteCountries;
+    private bool IsLoading { get; set; } = true;
+    private bool HasError { get; set; } = false;
+    private BtnActionTypeContext btnActionTypeContext;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+
+        try
+        {
+            btnActionType = await JS.InvokeAsync<string>("localStorage.getItem", "btnActionTypeContext");
+            userId = await JS.InvokeAsync<string>("localStorage.getItem", "userId");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro ao ler do localStorage: " + ex.Message);
+        }
+
+        if (string.IsNullOrWhiteSpace(btnActionType))
+        {
+            Console.WriteLine("btnActionType está vazio ou nulo.");
+            return;
+        }
+
+        if (!Enum.TryParse<BtnActionTypeContext>(btnActionType, out btnActionTypeContext))
+        {
+            Console.WriteLine("Falha ao converter btnActionType em enum.");
+            return;
+        }
+
+        if (btnActionTypeContext == BtnActionTypeContext.Country)
+        {
+            try
+            {
+                var response = await Http.GetFromJsonAsync<GetFavoriteCountriesResponse>($"http://localhost:5233/api/Favorites/GetFavoriteCountriesByUserId?userId={userId}");
+
+                if (response?.Success == true && response.Countries is not null)
+                {
+                    FavoriteCountries = response.Countries;
+                }
+            }
+            catch
+            {
+                HasError = true;
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+        else if (btnActionTypeContext == BtnActionTypeContext.City)
+        {
+            try
+            {
+                var response = await Http.GetFromJsonAsync<GetFavoriteCitiesResponse>($"http://localhost:5233/api/Favorites/GetFavoriteCitiesByUserId?userId={userId}");
+
+                if (response?.Success == true && response.Cities is not null)
+                {
+                    FavoriteCities = response.Cities;
+                }
+            }
+            catch (Exception ex)
+            {
+                HasError = true;
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+    }
+
+    private async Task DeleteCity(string id)
+    {
+        // lógica para deletar cidade
+    }
+
+    private async Task DeleteCountry(string id)
+    {
+        // lógica para deletar país
+    }
+}
+
+<style>
+    .favorite-table-container {
+        padding: 1rem;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin: 0 auto;
+        max-width: 800px;
+        text-align: center;
+    }
+
+        .favorite-table-container table {
+            margin: 0 auto;
+        }
+
+    .btn-delete {
+        background-color: #dc3545;
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+    .favorite-table-container table {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .favorite-table-container th,
+    .favorite-table-container td {
+        width: 33%;
+        text-align: center;
+    }
+
+    .title-container {
+        display: flex;
+        justify-content: center;
+    }
+</style>

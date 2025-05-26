@@ -1,0 +1,153 @@
+﻿@page "/"
+@using Core.Domain.Enums
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h2 style="text-align: center; margin-top: 20px;">Gerenciar Favoritos</h2>
+
+<div class="favorites-container">
+    <div class="favorites-box">
+        <h2>Menu Favoritos</h2>
+
+        <div class="button-group">
+            <button @onclick="SalvarPais"       class="action-button">Salvar País Favorito</button>
+            <button @onclick="SalvarCidade"     class="action-button">Salvar Cidade Favorita</button>
+            <button @onclick="ListarPaises"     class="action-button">Listar Países Favoritados</button>
+            <button @onclick="ListarCidades"    class="action-button">Listar Cidades Favoritadas</button>
+            <button @onclick="DeletarPais"      class="action-button">Deletar País Favoritado</button>
+            <button @onclick="DeletarCidade"    class="action-button">Deletar Cidade Favoritada</button>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(mensagem))
+{
+    <div class="toast-notification show">@mensagem</div>
+}
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #6a93cb, #a4bde2);
+        height: 100vh;
+    }
+
+    .favorites-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        padding: 1rem;
+    }
+
+    .favorites-box {
+        background-color: rgba(255, 255, 255, 0.05);
+        padding: 40px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        width: 300px;
+        text-align: center;
+        color: white;
+    }
+
+        .favorites-box h2 {
+            font-weight: 300;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+        .button-group button {
+            background-color: #0b3d91;
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: 0.3s ease;
+        }
+
+            .button-group button:hover {
+                background-color: #092c6c;
+            }
+
+    .toast-notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #dc3545;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1055;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0) translateX(-50%);
+        }
+
+</style>
+
+@code {
+    private string? mensagem;
+
+    private async Task MostrarMensagem(string texto)
+    {
+        mensagem = texto;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+        mensagem = null;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SalvarPais()
+    {
+
+    }
+
+    private async Task SalvarCidade()
+    {
+        
+    }
+
+    private async Task ListarPaises()
+    {
+        await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.Country);
+        Navigation.NavigateTo("/enter-userId");
+    }
+
+    private async Task ListarCidades()
+    {
+        await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.City);
+        Navigation.NavigateTo("/enter-userId");
+    }
+
+    private async Task DeletarPais()
+    {
+        await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.Country);
+        Navigation.NavigateTo("/deletePage");
+    }
+
+    private async Task DeletarCidade()
+    {
+        await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.City);
+        Navigation.NavigateTo("/deletePage");
+    }
+}
