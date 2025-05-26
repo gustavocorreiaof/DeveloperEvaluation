@@ -1,7 +1,16 @@
 ﻿@page "/deletePage"
 @using Core.Domain.Enums
+@using GlobalClimateAPI.Requests
+@using GlobalClimateAPI.Responses.Base
+@using System.Text.Json
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject HttpClient Http
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="toast-notification show">@message</div>
+}
 
 <div class="login-container">
     <div class="login-box">
@@ -17,21 +26,153 @@
 
         <div class="input-group">
             <span class="icon oi oi-key"></span>
-            <input @bind="EntityId" class="input-field" placeholder="ID do país/cidade" />
+            <input @bind="EntityName" class="input-field" placeholder="Nome do país/cidade" />
         </div>
 
-        <button class="login-button" @onclick="GoToListPage">Listar</button>
+        <button class="login-button" @onclick="Submit">Listar</button>
     </div>
 </div>
 
 @code {
     private string UserId { get; set; } = string.Empty;
-    private string EntityId { get; set; } = string.Empty;
+    private string EntityName { get; set; } = string.Empty;
+    private string? message;
+    private BtnActionTypeContext btnActionTypeContext;
 
-    private async Task GoToListPage()
+    protected override async Task OnInitializedAsync()
     {
-        await JS.InvokeVoidAsync("localStorage.setItem", "userId", UserId);
-        Navigation.NavigateTo("/favorites/List");
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        try
+        {
+            btnActionTypeContext = await JS.InvokeAsync<BtnActionTypeContext>("localStorage.getItem", "btnActionTypeContext");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro ao ler do localStorage: " + ex.Message);
+        }
+    }
+
+    private async Task Submit()
+    {
+        if (btnActionTypeContext == BtnActionTypeContext.Country)
+            DeleteCountry();
+        else
+            DeleteCity();
+    }
+    
+    private async Task DeleteCountry()
+    {
+        CountryFavoriteRequest request = new()
+        {
+            CountryName = EntityName,
+            UserId = UserId
+        };
+
+        var json = JsonSerializer.Serialize(request);
+        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var httpRequest = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri("http://localhost:5233/api/Favorites/DeleteFavoriteCountryByUserId"),
+            Content = content
+        };
+
+        var response = await Http.SendAsync(httpRequest);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        var baseResponse = JsonSerializer.Deserialize<BaseResponse>(responseBody, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = baseResponse.Message + '\n' + "Voltando ao menu inicial.";
+
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(4000);
+                message = null;
+                await InvokeAsync(StateHasChanged);
+            });
+
+            Navigation.NavigateTo("/favorites");
+        }
+        else
+        {
+            message = "Erro ao deletar: " + (baseResponse?.Message ?? "Unknown error");
+
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(4000);
+                message = null;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
+    }
+    
+    private async Task DeleteCity()
+    {
+        CityFavoriteRequest request = new()
+        {
+            CityName = EntityName,
+            UserId = UserId
+        };
+
+        var json = JsonSerializer.Serialize(request);
+        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var httpRequest = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri("http://localhost:5233/api/Favorites/DeleteFavoriteCityByUserId"),
+            Content = content
+        };
+
+        var response = await Http.SendAsync(httpRequest);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        var baseResponse = JsonSerializer.Deserialize<BaseResponse>(responseBody, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = baseResponse.Message + '\n' + "Voltando ao menu inicial.";
+
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(4000);
+                message = null;
+                await InvokeAsync(StateHasChanged);
+            });
+
+            Navigation.NavigateTo("/favorites");
+        }
+        else
+        {
+            message = "Erro ao deletar: " + (baseResponse?.Message ?? "Unknown error");
+
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(4000);
+                message = null;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 }
 
@@ -51,4 +192,24 @@
         border: none;
         background-color: #ffffff;
     }
+
+    .toast-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #dc3545;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1055;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
 </style>
