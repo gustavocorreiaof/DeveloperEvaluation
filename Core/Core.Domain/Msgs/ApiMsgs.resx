@@ -147,4 +147,16 @@
   <data name="INF006" xml:space="preserve">
     <value>City deleted successfully.</value>
   </data>
+  <data name="INF007" xml:space="preserve">
+    <value>Country added to favorites.</value>
+  </data>
+  <data name="INF008" xml:space="preserve">
+    <value>Country deleted successfully.</value>
+  </data>
+  <data name="EXC005" xml:space="preserve">
+    <value>It was not possible to delete this favorite country. This country is not among the user's favorite countries.</value>
+  </data>
+  <data name="EXC006" xml:space="preserve">
+    <value>This country is already among the user's favorite countries.</value>
+  </data>
 </root>

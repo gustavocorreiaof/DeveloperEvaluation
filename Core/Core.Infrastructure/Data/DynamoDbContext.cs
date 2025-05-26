@@ -69,20 +69,20 @@ namespace Core.Infrastructure.Data
             return results.FirstOrDefault()!;
         }
 
-        public async Task<FavoriteCountry> GetFavoriteCountryByCityNameAndUserId(string cityName, string userId)
+        public async Task<FavoriteCountry> GetFavoriteCountryByCountryNameAndUserId(string cityName, string userId)
         {
             var conditions = new List<ScanCondition>
-            {
-                new ScanCondition("CityName", ScanOperator.Equal, cityName),
-                new ScanCondition("UserId", ScanOperator.Equal, userId)
-            };
+                {
+                    new ScanCondition("CountryName", ScanOperator.Equal, cityName),
+                    new ScanCondition("UserId", ScanOperator.Equal, userId)
+                };
 
             var results = await _context.ScanAsync<FavoriteCountry>(conditions).GetNextSetAsync();
             return results.FirstOrDefault()!;
         }
 
 
-        
+
         public async Task<FavoriteCity> InsertFavoriteCity(FavoriteCity favoriteCity)
         {
             await _context.SaveAsync(favoriteCity);
@@ -94,8 +94,8 @@ namespace Core.Infrastructure.Data
             await _context.SaveAsync(favoriteCountry);
             return favoriteCountry;
         }
-        
-        
+
+
         public async Task DeleteFavoriteCity(string id)
         {
             await _context.DeleteAsync<FavoriteCity>(id);

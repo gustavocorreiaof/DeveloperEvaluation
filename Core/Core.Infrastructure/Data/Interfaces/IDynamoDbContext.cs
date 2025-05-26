@@ -11,7 +11,7 @@ namespace Core.Infrastructure.Data.Interfaces
         Task<FavoriteCity> GetFavoriteCityByCityNameAndUserId(string cityName, string userId);
         
         Task<List<FavoriteCountry>> GetAllFavoriteCountryByUserId(string userId);
-        Task<FavoriteCountry> GetFavoriteCountryByCityNameAndUserId(string cityName, string userId);
+        Task<FavoriteCountry> GetFavoriteCountryByCountryNameAndUserId(string cityName, string userId);
 
 
         Task<FavoriteCity> InsertFavoriteCity(FavoriteCity favoriteCity);

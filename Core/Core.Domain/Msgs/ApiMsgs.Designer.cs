@@ -97,6 +97,24 @@ namespace Core.Domain.Msgs {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a It was not possible to delete this favorite country. This country is not among the user&apos;s favorite countries..
+        /// </summary>
+        public static string EXC005 {
+            get {
+                return ResourceManager.GetString("EXC005", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This country is already among the user&apos;s favorite countries..
+        /// </summary>
+        public static string EXC006 {
+            get {
+                return ResourceManager.GetString("EXC006", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a City not found..
         /// </summary>
         public static string INF001 {
@@ -147,6 +165,24 @@ namespace Core.Domain.Msgs {
         public static string INF006 {
             get {
                 return ResourceManager.GetString("INF006", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Country added to favorites..
+        /// </summary>
+        public static string INF007 {
+            get {
+                return ResourceManager.GetString("INF007", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Country deleted successfully..
+        /// </summary>
+        public static string INF008 {
+            get {
+                return ResourceManager.GetString("INF008", resourceCulture);
             }
         }
     }

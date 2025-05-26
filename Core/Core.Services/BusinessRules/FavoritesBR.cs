@@ -59,7 +59,7 @@ namespace Core.Services.BusinessRules
         {
             FavoriteCountry favoriteCountry = await VerifyIfActionIsValidToCountry(favoriteDTO.Name, favoriteDTO.UserId, ActionType.Delete);
 
-            _ = _dbContext.DeleteFavoriteCity(favoriteCountry.Id);
+            _ = _dbContext.DeleteFavoriteCountry(favoriteCountry.Id);
         }
 
         public Task<List<FavoriteCity>> GetAllFavoriteCityByUserId(string userId)
@@ -101,17 +101,17 @@ namespace Core.Services.BusinessRules
 
             var response = await _httpClient.GetAsync(url);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
                 throw new ApiException(string.Format(ApiMsgs.INF002, countryName));
 
             _ = await _dbContext.GetUserById(userId) ?? throw new ApiException(ApiMsgs.EXC001);
 
-            FavoriteCountry favoriteCountry = await _dbContext.GetFavoriteCountryByCityNameAndUserId(countryName, userId);
+            FavoriteCountry favoriteCountry = await _dbContext.GetFavoriteCountryByCountryNameAndUserId(countryName, userId);
 
             if (favoriteCountry == null && actionType == ActionType.Delete)
-                throw new ApiException(ApiMsgs.EXC003);
+                throw new ApiException(ApiMsgs.EXC005);
             else if (favoriteCountry != null && actionType == ActionType.Insert)
-                throw new ApiException(ApiMsgs.EXC004);
+                throw new ApiException(ApiMsgs.EXC006);
 
             return favoriteCountry;
         }

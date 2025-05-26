@@ -12,7 +12,6 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace GlobalClimateAPI.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class FavoritesController : ControllerBase
@@ -161,7 +160,7 @@ namespace GlobalClimateAPI.Controllers
 
                 await _IFavoritesBR.CreateFavoriteCountry(favoriteDTO);
 
-                return Ok(new BaseResponse() { Success = true, Message = ApiMsgs.INF005 });
+                return Ok(new BaseResponse() { Success = true, Message = ApiMsgs.INF007 });
             }
             catch (ApiException ex)
             {
@@ -191,7 +190,7 @@ namespace GlobalClimateAPI.Controllers
 
                 await _IFavoritesBR.DeleteFavoriteCountry(favoriteDTO);
 
-                return Ok(new BaseResponse() { Success = true, Message = ApiMsgs.INF006 });
+                return Ok(new BaseResponse() { Success = true, Message = ApiMsgs.INF008 });
             }
             catch (ApiException ex)
             {
