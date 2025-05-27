@@ -16,6 +16,7 @@
             <button @onclick="DeletarPais"      class="action-button">Deletar País Favoritado</button>
             <button @onclick="DeletarCidade"    class="action-button">Deletar Cidade Favoritada</button>
             <button @onclick="GetCountryInfos"    class="action-button">Buscar Informação de Pais</button>
+            <button @onclick="GetWeatherInfos"    class="action-button">Buscar Informação de Clima</button>
         </div>
     </div>
 </div>
@@ -102,7 +103,14 @@
 
     private async Task GetCountryInfos()
     {
-        Navigation.NavigateTo("/InsertCountryName");
+        await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.Country);
+        Navigation.NavigateTo("/InsertName");
+    }
+
+    private async Task GetWeatherInfos()
+    {
+        await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.City);
+        Navigation.NavigateTo("/InsertName");
     }
 
     private async Task SalvarCidade()

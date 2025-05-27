@@ -2,6 +2,7 @@ using Core.Domain.Exceptions;
 using Core.Domain.Msgs;
 using GlobalClimateAPI.Responses;
 using GlobalClimateAPI.Responses.Base;
+using GlobalClimateAPI.Responses.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -45,7 +46,7 @@ namespace GlobalClimateAPI.Controllers
 
                 var json = await response.Content.ReadAsStringAsync();
 
-                return Ok(new GetWeatherResponse() { Success = true, WeatherInfos = JsonDocument.Parse(json) .ToString()});
+                return Ok(new GetWeatherResponse() { Success = true, WeatherInfos = ParseWeatherSummary(json)});
             }
             catch (ApiException ex)
             {
@@ -58,6 +59,19 @@ namespace GlobalClimateAPI.Controllers
                     statusCode: StatusCodes.Status500InternalServerError
                 );
             }
+        }
+
+        public static WeatherSummary ParseWeatherSummary(string json)
+        {
+            var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            return new WeatherSummary
+            {
+                Name = root.GetProperty("name").GetString(),
+                WeatherMain = root.GetProperty("weather")[0].GetProperty("main").GetString(),
+                Country = root.GetProperty("sys").GetProperty("country").GetString()
+            };
         }
     }
 }
