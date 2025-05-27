@@ -12,6 +12,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace GlobalClimateAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class FavoritesController : ControllerBase

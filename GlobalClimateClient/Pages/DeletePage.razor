@@ -13,7 +13,7 @@
 }
 
 <div class="login-container">
-    <div class="login-box">      
+    <div class="login-box">
 
         <div class="input-group">
             <span class="icon oi oi-key"></span>
@@ -24,8 +24,12 @@
             <span class="icon oi oi-key"></span>
             <input @bind="EntityName" class="input-field" placeholder="Nome do país/cidade" />
         </div>
-
-        <button class="login-button" @onclick="Submit">Listar</button>
+        <div class="button-group">
+            <button class="login-button" @onclick="Submit">Listar</button>
+            <button class="btn-voltar" @onclick="() => VoltarAoInicio()">
+                Favorites Page
+            </button>
+        </div>
     </div>
 </div>
 
@@ -33,7 +37,8 @@
     private string UserId { get; set; } = string.Empty;
     private string EntityName { get; set; } = string.Empty;
     private string? message;
-    private BtnActionTypeContext btnActionTypeContext;
+    private BtnActionTypeContext btnActionTypeContextEnum;
+    private string? btnActionTypeContext;
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,22 +48,24 @@
 
         try
         {
-            btnActionTypeContext = await JS.InvokeAsync<BtnActionTypeContext>("localStorage.getItem", "btnActionTypeContext");
+            btnActionTypeContext = await JS.InvokeAsync<string>("localStorage.getItem", "btnActionTypeContext");
         }
         catch (Exception ex)
         {
             Console.WriteLine("Erro ao ler do localStorage: " + ex.Message);
         }
+
+        Enum.TryParse(btnActionTypeContext, out btnActionTypeContextEnum);
     }
 
     private async Task Submit()
     {
-        if (btnActionTypeContext == BtnActionTypeContext.Country)
+        if (btnActionTypeContextEnum == BtnActionTypeContext.Country)
             DeleteCountry();
         else
             DeleteCity();
     }
-    
+
     private async Task DeleteCountry()
     {
         CountryFavoriteRequest request = new()
@@ -114,7 +121,7 @@
             });
         }
     }
-    
+
     private async Task DeleteCity()
     {
         CityFavoriteRequest request = new()
@@ -169,6 +176,11 @@
                 await InvokeAsync(StateHasChanged);
             });
         }
+    }
+
+    private async Task VoltarAoInicio()
+    {
+        Navigation.NavigateTo("/favorites");
     }
 }
 

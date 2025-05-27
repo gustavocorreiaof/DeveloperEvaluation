@@ -1,9 +1,12 @@
-﻿@page "/asas"
+﻿@page "/"
 @using System.ComponentModel.DataAnnotations
 @using GlobalClimateAPI.Requests
+@using GlobalClimateAPI.Responses
 @using GlobalClimateAPI.Responses.Base
 @using System.Text.Json
+@inject NavigationManager Navigation
 @inject HttpClient Http
+@inject IJSRuntime JS
 
 <style>
     .toast-notification {
@@ -54,12 +57,6 @@
             </div>
             <ValidationMessage For="@(() => loginRequest.Password)" class="validation-message" />
 
-            @*             DEPOIS EU VEJO SE DA PRA FAZER ISSO
-            <div class="options"> 
-                <label><input type="checkbox" /> Remember me</label>
-                <a href="#">Forgot Password?</a>
-            </div> *@
-
             <button type="submit" class="login-button">LOGIN</button>
         </div>
     </div>
@@ -71,30 +68,44 @@
 
     private async Task HandleLogin()
     {
-        var response = await Http.PostAsJsonAsync("http://localhost:5233/api/Auth/", loginRequest);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            // Login OK
-        }
-        else
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            BaseResponse? baseResponse = JsonSerializer.Deserialize<BaseResponse>(content, new JsonSerializerOptions
+            var response = await Http.PostAsJsonAsync("http://localhost:5233/api/Auth/", loginRequest);
+
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true
-            });
+                var content = await response.Content.ReadAsStringAsync();
+                LoginResponse? loginResponse = JsonSerializer.Deserialize<LoginResponse>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
-            errorMessage = "Login Failed: " + (baseResponse?.Message ?? "Unknown error");
-
-            await InvokeAsync(StateHasChanged);
-
-            _ = Task.Run(async () =>
+                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", loginResponse.Token);
+                Navigation.NavigateTo("/favorites");
+            }
+            else
             {
-                await Task.Delay(4000);
-                errorMessage = null;
+                var content = await response.Content.ReadAsStringAsync();
+                BaseResponse? baseResponse = JsonSerializer.Deserialize<BaseResponse>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                errorMessage = "Login Failed: " + (baseResponse?.Message ?? "Unknown error");
+
                 await InvokeAsync(StateHasChanged);
-            });
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(4000);
+                    errorMessage = null;
+                    await InvokeAsync(StateHasChanged);
+                });
+            }
+        }
+        catch(Exception ex)
+        {
+            throw;
         }
     }
 }

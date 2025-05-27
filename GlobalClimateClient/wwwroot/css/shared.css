@@ -1,0 +1,22 @@
+﻿.btn-voltar {
+    background-color: #4a90e2; 
+    width: 59%;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(74, 144, 226, 0.4);
+}
+
+    .btn-voltar:hover {
+        background-color: #357abd;
+    }
+
+.button-group {
+    display: flex;
+    gap: 8px; 
+    align-items: center; 
+}

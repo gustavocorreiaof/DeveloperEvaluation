@@ -2,6 +2,7 @@
 @using Core.Domain.Entities
 @using Core.Domain.Enums
 @using GlobalClimateAPI.Responses
+@using System.Net.Http.Headers
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
@@ -23,7 +24,7 @@
     }
     else if ((FavoriteCities == null || FavoriteCities.Count == 0) && (FavoriteCountries == null || FavoriteCountries.Count == 0))
     {
-        if (btnActionTypeContext == BtnActionTypeContext.City)
+        if (btnActionTypeContextEnum == BtnActionTypeContext.City)
         {
             <h3 class="text-white">Nenhuma cidade favorita encontrada.</h3>
         }
@@ -43,7 +44,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (btnActionTypeContext == BtnActionTypeContext.City)
+                @if (btnActionTypeContextEnum == BtnActionTypeContext.City)
                 {
                     foreach (var city in FavoriteCities)
                     {
@@ -77,6 +78,10 @@
             </tbody>
         </table>
     }
+
+    <button class="btn-voltar" @onclick="() => VoltarAoInicio()">
+        Favorites Page
+    </button>
 </div>
 
 
@@ -88,7 +93,8 @@
     private List<FavoriteCountry> FavoriteCountries;
     private bool IsLoading { get; set; } = true;
     private bool HasError { get; set; } = false;
-    private BtnActionTypeContext btnActionTypeContext;
+    private string btnActionTypeContext;
+    private BtnActionTypeContext btnActionTypeContextEnum;
 
     protected override async Task OnInitializedAsync()
     {
@@ -113,24 +119,27 @@
             return;
         }
 
-        if (!Enum.TryParse<BtnActionTypeContext>(btnActionType, out btnActionTypeContext))
+        if (!Enum.TryParse<BtnActionTypeContext>(btnActionType, out btnActionTypeContextEnum))
         {
             Console.WriteLine("Falha ao converter btnActionType em enum.");
             return;
         }
 
-        if (btnActionTypeContext == BtnActionTypeContext.Country)
+        if (btnActionTypeContextEnum == BtnActionTypeContext.Country)
         {
             try
             {
-                var response = await Http.GetFromJsonAsync<GetFavoriteCountriesResponse>($"http://localhost:5233/api/Favorites/GetFavoriteCountriesByUserId?userId={userId}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"http://localhost:5233/api/Favorites/GetFavoriteCountriesByUserId?userId={userId}");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var response = await Http.SendAsync(request);
 
-                if (response?.Success == true && response.Countries is not null)
+                if (response.IsSuccessStatusCode == true)
                 {
-                    FavoriteCountries = response.Countries;
+                    var data = await response.Content.ReadFromJsonAsync<GetFavoriteCountriesResponse>();
+                    FavoriteCountries = data.Countries;
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 HasError = true;
             }
@@ -139,15 +148,19 @@
                 IsLoading = false;
             }
         }
-        else if (btnActionTypeContext == BtnActionTypeContext.City)
+        else if (btnActionTypeContextEnum == BtnActionTypeContext.City)
         {
             try
             {
-                var response = await Http.GetFromJsonAsync<GetFavoriteCitiesResponse>($"http://localhost:5233/api/Favorites/GetFavoriteCitiesByUserId?userId={userId}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"http://localhost:5233/api/Favorites/GetFavoriteCitiesByUserId?userId={userId}");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                if (response?.Success == true && response.Cities is not null)
+                var response = await Http.SendAsync(request);
+
+                if (response.IsSuccessStatusCode == true)
                 {
-                    FavoriteCities = response.Cities;
+                    var data = await response.Content.ReadFromJsonAsync<GetFavoriteCitiesResponse>();
+                    FavoriteCities = data.Cities;
                 }
             }
             catch (Exception ex)
@@ -164,6 +177,11 @@
     private async Task DeleteCity(string id)
     {
         // lógica para deletar cidade
+    }
+
+    private async Task VoltarAoInicio()
+    {
+        Navigation.NavigateTo("/favorites");
     }
 
     private async Task DeleteCountry(string id)
