@@ -1,0 +1,46 @@
+﻿@page "/InsertCountryName"
+@using Core.Domain.Enums
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="login-container">
+    <div class="login-box">
+        
+        <h2>Informe o nome do país</h2>
+
+        <div class="input-group">
+            <span class="icon oi oi-key"></span>
+            <input @bind="CountryName" class="input-field" placeholder="Country Name to search" />
+        </div>
+
+        <button class="login-button" @onclick="GoToInfosPage">Search Infos</button>
+    </div>
+</div>
+
+@code {
+    private string CountryName { get; set; } = string.Empty;
+
+    private async Task GoToInfosPage()
+    {
+        await JS.InvokeVoidAsync("localStorage.setItem", "CountryName", CountryName);
+        Navigation.NavigateTo("/country-info");
+    }
+}
+
+<style>
+    .card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #f0f4f8;
+    }
+
+    .user-card {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 20px;
+        border: none;
+        background-color: #ffffff;
+    }
+</style>

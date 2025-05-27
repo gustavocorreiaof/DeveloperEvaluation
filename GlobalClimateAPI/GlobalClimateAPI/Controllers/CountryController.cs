@@ -2,6 +2,7 @@
 using Core.Domain.Msgs;
 using GlobalClimateAPI.Responses;
 using GlobalClimateAPI.Responses.Base;
+using GlobalClimateAPI.Responses.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -43,11 +44,18 @@ namespace GlobalClimateAPI.Controllers
 
                 var response = await _httpClient.GetAsync(url);
 
-                if (!response.IsSuccessStatusCode)
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                     return NotFound(new BaseResponse() { Success = false, Message = string.Format(ApiMsgs.INF002, name) });
 
                 var json = await response.Content.ReadAsStringAsync();
-                return Ok(new GetCountryResponse() { Success = true, CountryInfos = JsonDocument.Parse(json).ToString() });
+                var document = JsonDocument.Parse(json);
+                var countryJson = document.RootElement[0];
+
+                return Ok(new GetCountryResponse
+                {
+                    Success = true,
+                    CountryInfos = GetCountryInfo(countryJson)
+                });
             }
             catch (ApiException ex)
             {
@@ -60,6 +68,22 @@ namespace GlobalClimateAPI.Controllers
                     statusCode: StatusCodes.Status500InternalServerError
                 );
             }
+        }
+
+        private CountryInfo GetCountryInfo(JsonElement countryJson)
+        {
+            var country = new CountryInfo
+            {
+                Name = countryJson.GetProperty("name").GetProperty("common").GetString(),
+                Capital = countryJson.TryGetProperty("capital", out var capitalEl) && capitalEl.ValueKind == JsonValueKind.Array
+                        ? capitalEl[0].GetString()
+                        : null,
+                Region = countryJson.GetProperty("region").GetString(),
+                Language = countryJson.GetProperty("languages").EnumerateObject().FirstOrDefault().Value.GetString(),
+                Population = countryJson.GetProperty("population").GetInt64()
+            };
+
+            return country;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GlobalClimateAPI.Responses.Base;
+using GlobalClimateAPI.Responses.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace GlobalClimateAPI.Responses
@@ -6,6 +7,6 @@ namespace GlobalClimateAPI.Responses
     public class GetCountryResponse: BaseResponse
     {
         [SwaggerSchema("Contains the Country's infos.")]
-        public string CountryInfos { get; set; }
+        public CountryInfo CountryInfos { get; set; }
     }
 }
