@@ -1,19 +1,36 @@
 ﻿@page "/favorites/List"
 @using Core.Domain.Entities
 @using Core.Domain.Enums
+@using GlobalClimateAPI.Requests
 @using GlobalClimateAPI.Responses
 @using System.Net.Http.Headers
+@using System.Text.Json
+@using GlobalClimateAPI.Responses.Base
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<div class="title-container">
-    <h3 class="text-white">Cidades Favoritas</h3>
-</div>
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="toast-notification show">@message</div>
+}
 
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="toast-success show">@successMessage</div>
+}
 
 <div class="table-responsive favorite-table-container">
-    
+
+    @if (btnActionTypeContextEnum == BtnActionTypeContext.City)
+    {
+        <h2>Cidades Favoritas.</h2>
+    }
+    else
+    {
+        <h2>Países favoritos.</h2>        
+    }
+
     @if (IsLoading)
     {
         <h3 class="text-white">Carregando...</h3>
@@ -38,7 +55,7 @@
         <table class="table table-hover table-dark table-bordered text-white">
             <thead>
                 <tr>
-                    <th>Nome da Cidade</th>
+                    <th>Nome da Cidade/País</th>
                     <th>Data Favoritada</th>
                     <th>Actions</th>
                 </tr>
@@ -52,7 +69,7 @@
                             <td>@city.CityName</td>
                             <td>@city.FavoritedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
                             <td>
-                                <button class="btn btn-delete" @onclick="() => DeleteCity(city.Id)">
+                                <button class="btn btn-delete" @onclick="() => DeleteCity(city.CityName)">
                                     delete
                                 </button>
                             </td>
@@ -68,7 +85,7 @@
                             <td>@country.FavoritedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
 
                             <td>
-                                <button class="btn btn-delete" @onclick="() => DeleteCountry(country.Id)">
+                                <button class="btn btn-delete" @onclick="() => DeleteCountry(country.CountryName)">
                                     delete
                                 </button>
                             </td>
@@ -95,6 +112,8 @@
     private bool HasError { get; set; } = false;
     private string btnActionTypeContext;
     private BtnActionTypeContext btnActionTypeContextEnum;
+    private string? message;
+    private string? successMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -174,19 +193,119 @@
         }
     }
 
-    private async Task DeleteCity(string id)
+    private async Task DeleteCountry(string EntityName)
     {
-        // lógica para deletar cidade
+        CountryFavoriteRequest request = new()
+        {
+            CountryName = EntityName,
+            UserId = userId
+        };
+
+        var json = JsonSerializer.Serialize(request);
+        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var httpRequest = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri("http://localhost:5233/api/Favorites/DeleteFavoriteCountryByUserId"),
+            Content = content
+        };
+
+        var response = await Http.SendAsync(httpRequest);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        var baseResponse = JsonSerializer.Deserialize<BaseResponse>(responseBody, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            successMessage = baseResponse.Message + "\nVoltando ao menu inicial.";
+
+            await InvokeAsync(StateHasChanged);
+
+            await Task.Delay(4000);
+
+            successMessage = null;
+
+            await InvokeAsync(StateHasChanged);
+
+            Navigation.NavigateTo("/favorites");
+        }
+        else
+        {
+            message = "Erro ao deletar: " + (baseResponse?.Message ?? "Unknown error");
+
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(4000);
+                message = null;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
+    }
+
+    private async Task DeleteCity(string entityName)
+    {
+        CityFavoriteRequest request = new()
+        {
+            CityName = entityName,
+            UserId = userId
+        };
+
+        var json = JsonSerializer.Serialize(request);
+        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var httpRequest = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri("http://localhost:5233/api/Favorites/DeleteFavoriteCityByUserId"),
+            Content = content
+        };
+
+        var response = await Http.SendAsync(httpRequest);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        var baseResponse = JsonSerializer.Deserialize<BaseResponse>(responseBody, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            successMessage = baseResponse.Message + "\nVoltando ao menu inicial.";
+
+            await InvokeAsync(StateHasChanged);
+
+            await Task.Delay(4000);
+
+            successMessage = null;
+
+            await InvokeAsync(StateHasChanged);
+
+            Navigation.NavigateTo("/favorites");
+        }
+        else
+        {
+            message = "Erro ao deletar: " + (baseResponse?.Message ?? "Unknown error");
+
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(4000);
+                message = null;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async Task VoltarAoInicio()
     {
         Navigation.NavigateTo("/favorites");
-    }
-
-    private async Task DeleteCountry(string id)
-    {
-        // lógica para deletar país
     }
 }
 

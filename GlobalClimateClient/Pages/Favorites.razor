@@ -4,8 +4,6 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<h2 style="text-align: center; margin-top: 20px;">Gerenciar Favoritos</h2>
-
 <div class="favorites-container">
     <div class="favorites-box">
         <h2>Menu Favoritos</h2>
@@ -80,28 +78,6 @@
             .button-group button:hover {
                 background-color: #092c6c;
             }
-
-    .toast-notification {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #dc3545;
-        color: white;
-        padding: 16px 24px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        z-index: 1055;
-        opacity: 0;
-        transform: translateY(-20px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-        .toast-notification.show {
-            opacity: 1;
-            transform: translateY(0) translateX(-50%);
-        }
-
 </style>
 
 @code {

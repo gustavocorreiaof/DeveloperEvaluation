@@ -8,28 +8,6 @@
 @inject HttpClient Http
 @inject IJSRuntime JS
 
-<style>
-    .toast-notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: #dc3545;
-        color: white;
-        padding: 16px 24px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        z-index: 1055;
-        opacity: 0;
-        transform: translateY(-20px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .toast-notification.show {
-        opacity: 1;
-        transform: translateY(0);
-    }
-</style>
-
 <EditForm Model="@loginRequest" OnValidSubmit="HandleLogin">
     <DataAnnotationsValidator />
 

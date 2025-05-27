@@ -12,8 +12,15 @@
     <div class="toast-notification show">@message</div>
 }
 
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="toast-success show">@successMessage</div>
+}
+
 <div class="login-container">
     <div class="login-box">      
+
+        <h2>Adicionar País/Cidade</h2>
 
         <div class="input-group">
             <span class="icon oi oi-key"></span>
@@ -26,7 +33,7 @@
         </div>
 
         <div class="button-group">
-            <button class="login-button" @onclick="Submit">Listar</button>
+            <button class="login-button" @onclick="Submit">Salvar</button>
             <button class="btn-voltar" @onclick="() => VoltarAoInicio()">
                 Favorites Page
             </button>
@@ -39,6 +46,7 @@
     private string UserId { get; set; } = string.Empty;
     private string EntityName { get; set; } = string.Empty;
     private string? message;
+    private string? successMessage;
     private string btnActionTypeContext;
     private BtnActionTypeContext btnActionTypeContextEnum;
 
@@ -72,7 +80,7 @@
         else
             InsertCity();
     }
-    
+
     private async Task InsertCountry()
     {
         CountryFavoriteRequest request = new()
@@ -101,16 +109,15 @@
 
         if (response.IsSuccessStatusCode)
         {
-            message = baseResponse.Message + '\n' + "Voltando ao menu inicial.";
+            successMessage = baseResponse.Message + "\nVoltando ao menu inicial.";
 
             await InvokeAsync(StateHasChanged);
 
-            _ = Task.Run(async () =>
-            {
-                await Task.Delay(4000);
-                message = null;
-                await InvokeAsync(StateHasChanged);
-            });
+            await Task.Delay(4000);
+
+            successMessage = null;
+
+            await InvokeAsync(StateHasChanged);
 
             Navigation.NavigateTo("/favorites");
         }
@@ -157,16 +164,15 @@
 
         if (response.IsSuccessStatusCode)
         {
-            message = baseResponse.Message + '\n' + "Voltando ao menu inicial.";
+            successMessage = baseResponse.Message + "\nVoltando ao menu inicial.";
 
             await InvokeAsync(StateHasChanged);
 
-            _ = Task.Run(async () =>
-            {
-                await Task.Delay(4000);
-                message = null;
-                await InvokeAsync(StateHasChanged);
-            });
+            await Task.Delay(4000);
+
+            successMessage = null;
+
+            await InvokeAsync(StateHasChanged);
 
             Navigation.NavigateTo("/favorites");
         }
@@ -201,25 +207,5 @@
         border-radius: 20px;
         border: none;
         background-color: #ffffff;
-    }
-
-    .toast-notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: #dc3545;
-        color: white;
-        padding: 16px 24px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        z-index: 1055;
-        opacity: 0;
-        transform: translateY(-20px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-        .toast-notification.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    }    
 </style>
