@@ -119,12 +119,14 @@
 
     private async Task SalvarPais()
     {
-
+        await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.Country);
+        Navigation.NavigateTo("/InsertPage");
     }
 
     private async Task SalvarCidade()
     {
-        
+        await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.City);
+        Navigation.NavigateTo("/InsertPage");
     }
 
     private async Task ListarPaises()

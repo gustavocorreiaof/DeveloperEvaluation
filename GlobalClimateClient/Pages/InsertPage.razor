@@ -1,4 +1,4 @@
-﻿@page "/deletePage"
+﻿@page "/InsertPage"
 @using Core.Domain.Enums
 @using GlobalClimateAPI.Requests
 @using GlobalClimateAPI.Responses.Base
@@ -54,12 +54,12 @@
     private async Task Submit()
     {
         if (btnActionTypeContext == BtnActionTypeContext.Country)
-            DeleteCountry();
+            InsertCountry();
         else
-            DeleteCity();
+            InsertCity();
     }
     
-    private async Task DeleteCountry()
+    private async Task InsertCountry()
     {
         CountryFavoriteRequest request = new()
         {
@@ -72,8 +72,8 @@
 
         var httpRequest = new HttpRequestMessage
         {
-            Method = HttpMethod.Delete,
-            RequestUri = new Uri("http://localhost:5233/api/Favorites/DeleteFavoriteCountryByUserId"),
+            Method = HttpMethod.Post,
+            RequestUri = new Uri("http://localhost:5233/api/Favorites/AddFavoriteCountryByUserId"),
             Content = content
         };
 
@@ -102,7 +102,7 @@
         }
         else
         {
-            message = "Erro ao deletar: " + (baseResponse?.Message ?? "Unknown error");
+            message = "Erro ao inserir: " + (baseResponse?.Message ?? "Unknown error");
 
             await InvokeAsync(StateHasChanged);
 
@@ -115,7 +115,7 @@
         }
     }
     
-    private async Task DeleteCity()
+    private async Task InsertCity()
     {
         CityFavoriteRequest request = new()
         {
@@ -128,8 +128,8 @@
 
         var httpRequest = new HttpRequestMessage
         {
-            Method = HttpMethod.Delete,
-            RequestUri = new Uri("http://localhost:5233/api/Favorites/DeleteFavoriteCityByUserId"),
+            Method = HttpMethod.Post,
+            RequestUri = new Uri("http://localhost:5233/api/Favorites/AddFavoriteCityByUserId"),
             Content = content
         };
 
@@ -158,7 +158,7 @@
         }
         else
         {
-            message = "Erro ao deletar: " + (baseResponse?.Message ?? "Unknown error");
+            message = "Erro ao inserir: " + (baseResponse?.Message ?? "Unknown error");
 
             await InvokeAsync(StateHasChanged);
 
