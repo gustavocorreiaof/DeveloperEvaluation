@@ -6,24 +6,24 @@
 
 <div class="favorites-container">
     <div class="favorites-box">
-        <h2>Menu Favoritos</h2>
+        <h2>Favorites Menu</h2>
 
         <div class="button-group">
-            <button @onclick="SalvarPais"       class="action-button">Salvar País Favorito</button>
-            <button @onclick="SalvarCidade"     class="action-button">Salvar Cidade Favorita</button>
-            <button @onclick="ListarPaises"     class="action-button">Listar Países Favoritados</button>
-            <button @onclick="ListarCidades"    class="action-button">Listar Cidades Favoritadas</button>
-            <button @onclick="DeletarPais"      class="action-button">Deletar País Favoritado</button>
-            <button @onclick="DeletarCidade"    class="action-button">Deletar Cidade Favoritada</button>
-            <button @onclick="GetCountryInfos"    class="action-button">Buscar Informação de Pais</button>
-            <button @onclick="GetWeatherInfos"    class="action-button">Buscar Informação de Clima</button>
+            <button @onclick="SaveCountry" class="action-button">Save Favorite Country</button>
+            <button @onclick="SaveCity" class="action-button">Save Favorite City</button>
+            <button @onclick="ListCountries" class="action-button">List Favorite Countries</button>
+            <button @onclick="ListCities" class="action-button">List Favorite Cities</button>
+            <button @onclick="DeleteCountry" class="action-button">Delete Favorite Country</button>
+            <button @onclick="DeleteCity" class="action-button">Delete Favorite City</button>
+            <button @onclick="GetCountryInfos" class="action-button">Get Country Info</button>
+            <button @onclick="GetWeatherInfos" class="action-button">Get Weather Info</button>
         </div>
     </div>
 </div>
 
-@if (!string.IsNullOrEmpty(mensagem))
+@if (!string.IsNullOrEmpty(message))
 {
-    <div class="toast-notification show">@mensagem</div>
+    <div class="toast-notification show">@message</div>
 }
 
 <style>
@@ -83,19 +83,19 @@
 </style>
 
 @code {
-    private string? mensagem;
+    private string? message;
 
-    private async Task MostrarMensagem(string texto)
+    private async Task ShowMessage(string text)
     {
-        mensagem = texto;
+        message = text;
         StateHasChanged();
 
         await Task.Delay(3000);
-        mensagem = null;
+        message = null;
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task SalvarPais()
+    private async Task SaveCountry()
     {
         await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.Country);
         Navigation.NavigateTo("/InsertPage");
@@ -113,31 +113,31 @@
         Navigation.NavigateTo("/InsertName");
     }
 
-    private async Task SalvarCidade()
+    private async Task SaveCity()
     {
         await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.City);
         Navigation.NavigateTo("/InsertPage");
     }
 
-    private async Task ListarPaises()
+    private async Task ListCountries()
     {
         await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.Country);
         Navigation.NavigateTo("/enter-userId");
     }
 
-    private async Task ListarCidades()
+    private async Task ListCities()
     {
         await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.City);
         Navigation.NavigateTo("/enter-userId");
     }
 
-    private async Task DeletarPais()
+    private async Task DeleteCountry()
     {
         await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.Country);
         Navigation.NavigateTo("/deletePage");
     }
 
-    private async Task DeletarCidade()
+    private async Task DeleteCity()
     {
         await JS.InvokeVoidAsync("localStorage.setItem", "btnActionTypeContext", BtnActionTypeContext.City);
         Navigation.NavigateTo("/deletePage");

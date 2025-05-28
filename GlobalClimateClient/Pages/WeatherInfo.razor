@@ -7,33 +7,33 @@
 @inject NavigationManager Navigation
 
 <div class="weather-info-container">
-    <h2 class="text-white">Informações Climáticas</h2>
+    <h2 class="text-white">Weather Information</h2>
 
     @if (IsLoading)
     {
-        <h3 class="text-white">Carregando...</h3>
+        <h3 class="text-white">Loading...</h3>
     }
     else if (HasError)
     {
-        <h3 class="text-white">Erro ao carregar os dados climáticos.</h3>
+        <h3 class="text-white">Error loading weather data.</h3>
     }
     else if (Weather == null)
     {
-        <h3 class="text-white">Nenhuma informação encontrada.</h3>
+        <h3 class="text-white">No information found.</h3>
     }
     else
     {
         <table class="table-weather-info text-white">
             <tr>
-                <th>Nome</th>
+                <th>Name</th>
                 <td>@Weather.Name</td>
             </tr>
             <tr>
-                <th>Clima</th>
+                <th>Weather</th>
                 <td>@Weather.WeatherMain</td>
             </tr>
             <tr>
-                <th>País</th>
+                <th>Country</th>
                 <td>@Weather.Country</td>
             </tr>
         </table>
@@ -67,7 +67,7 @@
             var response = await Http.GetAsync($"http://localhost:5233/Weather?city={cityName}");
             if (response.IsSuccessStatusCode)
             {
-                var json = await response.Content.ReadAsStringAsync();                
+                var json = await response.Content.ReadAsStringAsync();
 
                 var content = JsonSerializer.Deserialize<GetWeatherResponse>(json, new JsonSerializerOptions
                 {

@@ -74,12 +74,12 @@ namespace Core.Services.BusinessRules
 
         private async Task<FavoriteCity> VerifyIfActionIsValidToCities(string cityName, string userId, ActionType actionType)
         {
-            var baseUrl = _config["Urls:RestCountries"];
-            var url = $"{baseUrl}{cityName}";
+            var apiKey = _config["OpenWeather:ApiKey"];
+            var url = string.Format(_config["Urls:OpenWeatherMap"]!, cityName, apiKey);
 
             var response = await _httpClient.GetAsync(url);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
                 throw new ApiException(ApiMsgs.INF001);
 
             _ = await _dbContext.GetUserById(userId) ?? throw new ApiException(ApiMsgs.EXC001);

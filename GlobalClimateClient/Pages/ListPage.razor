@@ -24,30 +24,30 @@
 
     @if (btnActionTypeContextEnum == BtnActionTypeContext.City)
     {
-        <h2>Cidades Favoritas.</h2>
+        <h2>Favorite Cities.</h2>
     }
     else
     {
-        <h2>Países favoritos.</h2>        
+        <h2>Favorite Countries.</h2>
     }
 
     @if (IsLoading)
     {
-        <h3 class="text-white">Carregando...</h3>
+        <h3 class="text-white">Loading...</h3>
     }
     else if (HasError)
     {
-        <h3 class="text-white">Erro ao carregar as cidades favoritas.</h3>
+        <h3 class="text-white">Error loading favorite cities.</h3>
     }
     else if ((FavoriteCities == null || FavoriteCities.Count == 0) && (FavoriteCountries == null || FavoriteCountries.Count == 0))
     {
         if (btnActionTypeContextEnum == BtnActionTypeContext.City)
         {
-            <h3 class="text-white">Nenhuma cidade favorita encontrada.</h3>
+            <h3 class="text-white">No favorite cities found.</h3>
         }
         else
         {
-            <h3 class="text-white">Nenhum país favorito encontrado.</h3>            
+            <h3 class="text-white">No favorite countries found.</h3>
         }
     }
     else
@@ -55,8 +55,8 @@
         <table class="table table-hover table-dark table-bordered text-white">
             <thead>
                 <tr>
-                    <th>Nome da Cidade/País</th>
-                    <th>Data Favoritada</th>
+                    <th>City/Country Name</th>
+                    <th>Favorited Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -129,18 +129,18 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Erro ao ler do localStorage: " + ex.Message);
+            Console.WriteLine("Error reading from localStorage: " + ex.Message);
         }
 
         if (string.IsNullOrWhiteSpace(btnActionType))
         {
-            Console.WriteLine("btnActionType está vazio ou nulo.");
+            Console.WriteLine("btnActionType is empty or null.");
             return;
         }
 
         if (!Enum.TryParse<BtnActionTypeContext>(btnActionType, out btnActionTypeContextEnum))
         {
-            Console.WriteLine("Falha ao converter btnActionType em enum.");
+            Console.WriteLine("Failed to parse btnActionType to enum.");
             return;
         }
 
@@ -158,7 +158,7 @@
                     FavoriteCountries = data.Countries;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 HasError = true;
             }
@@ -221,7 +221,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            successMessage = baseResponse.Message + "\nVoltando ao menu inicial.";
+            successMessage = baseResponse.Message + "\nReturning to main menu.";
 
             await InvokeAsync(StateHasChanged);
 
@@ -235,7 +235,7 @@
         }
         else
         {
-            message = "Erro ao deletar: " + (baseResponse?.Message ?? "Unknown error");
+            message = "Error deleting: " + (baseResponse?.Message ?? "Unknown error");
 
             await InvokeAsync(StateHasChanged);
 
@@ -276,7 +276,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            successMessage = baseResponse.Message + "\nVoltando ao menu inicial.";
+            successMessage = baseResponse.Message + "\nReturning to main menu.";
 
             await InvokeAsync(StateHasChanged);
 
@@ -290,7 +290,7 @@
         }
         else
         {
-            message = "Erro ao deletar: " + (baseResponse?.Message ?? "Unknown error");
+            message = "Error deleting: " + (baseResponse?.Message ?? "Unknown error");
 
             await InvokeAsync(StateHasChanged);
 
